@@ -18,6 +18,17 @@ interface Point2D {
   y: number;
 }
 
+interface Point3D extends Point2D {
+  z: number;
+}
+
+/**
+ * Project the 3D point onto the XY-plane
+ */
+export const project = ({ x, y, z }: Point3D): Point2D => {
+  return { x: x / z, y: y / z };
+};
+
 /**
  * Convert NDC coordinates to screen space coordinates
  *
@@ -48,8 +59,15 @@ export function setupCanvas2d(element: HTMLCanvasElement) {
     context2d.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
     context2d.fillStyle = COLOR;
+    // front quad
     const point1 = screen({ x: -0.5, y: 0.5 }, SCREEN_DIMENSIONS);
+    const point2 = screen({ x: 0.5, y: 0.5 }, SCREEN_DIMENSIONS);
+    const point3 = screen({ x: 0.5, y: -0.5 }, SCREEN_DIMENSIONS);
+    const point4 = screen({ x: -0.5, y: -0.5 }, SCREEN_DIMENSIONS);
     context2d.rect(point1.x, point1.y, POINT_SIZE, POINT_SIZE);
+    context2d.rect(point2.x, point2.y, POINT_SIZE, POINT_SIZE);
+    context2d.rect(point3.x, point3.y, POINT_SIZE, POINT_SIZE);
+    context2d.rect(point4.x, point4.y, POINT_SIZE, POINT_SIZE);
     context2d.fill();
   };
 
