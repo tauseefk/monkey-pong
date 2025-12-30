@@ -1,25 +1,13 @@
-const COLOR = '#519872';
-const CLEAR_COLOR = '#585464';
-const CANVAS_SIZE = 800;
-
-type Dimensions = {
-  width: number;
-  height: number;
-};
-
-const SCREEN_DIMENSIONS: Dimensions = {
-  width: CANVAS_SIZE,
-  height: CANVAS_SIZE,
-};
-
-interface Point2D {
-  x: number;
-  y: number;
-}
-
-interface Point3D extends Point2D {
-  z: number;
-}
+import {
+  CANVAS_SIZE,
+  CLEAR_COLOR,
+  COLOR,
+  FPS,
+  MILLIS_PER_FRAME,
+  SCREEN_DIMENSIONS,
+} from './constants';
+import { CUBE } from './cube';
+import type { Dimensions, Point2D, Point3D, Shape } from './types';
 
 /**
  * Project the 3D point onto the XY-plane
@@ -43,31 +31,6 @@ export const screen = (
     y: (1 - (y + 1) / 2) * screenDimensions.height,
   };
 };
-
-const POINTS: Point3D[] = [
-  // front face
-  { x: -0.5, y: 0.5, z: -0.5 },
-  { x: 0.5, y: 0.5, z: -0.5 },
-  { x: 0.5, y: -0.5, z: -0.5 },
-  { x: -0.5, y: -0.5, z: -0.5 },
-  // back face
-  { x: -0.5, y: 0.5, z: 0.5 },
-  { x: 0.5, y: 0.5, z: 0.5 },
-  { x: 0.5, y: -0.5, z: 0.5 },
-  { x: -0.5, y: -0.5, z: 0.5 },
-];
-
-const FACES = [
-  [0, 1, 2, 3],
-  [4, 5, 6, 7],
-  [0, 4],
-  [1, 5],
-  [2, 6],
-  [3, 7],
-];
-
-const FPS = 60;
-const MILLIS_PER_FRAME = 1000;
 
 const rotate_xz = ({ x, y, z }: Point3D, angle: number) => {
   const c = Math.cos(angle);
@@ -101,7 +64,7 @@ export function setupCanvas2d(element: HTMLCanvasElement) {
     context2d.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
   };
 
-  const draw = () => {
+  const draw = (shape: Shape) => {
     clear();
 
     context2d.strokeStyle = COLOR;
@@ -110,10 +73,10 @@ export function setupCanvas2d(element: HTMLCanvasElement) {
     angle += (Math.PI * dt) / 2;
     context2d.beginPath();
 
-    for (const face of FACES) {
+    for (const face of shape.faces) {
       for (let idx = 0; idx < face.length; idx++) {
-        const from = POINTS[face[idx]];
-        const to = POINTS[face[(idx + 1) % face.length]];
+        const from = shape.vertices[face[idx]];
+        const to = shape.vertices[face[(idx + 1) % face.length]];
 
         const projectedFrom = screen(
           project(translate(rotate_xz(from, angle), 2.0)),
@@ -130,8 +93,8 @@ export function setupCanvas2d(element: HTMLCanvasElement) {
     }
     context2d.stroke();
 
-    setTimeout(draw, FPS / MILLIS_PER_FRAME);
+    setTimeout(() => draw(shape), MILLIS_PER_FRAME);
   };
 
-  draw();
+  draw(CUBE);
 }
