@@ -60,16 +60,40 @@ export function setupCanvas2d(element: HTMLCanvasElement) {
 
     context2d.fillStyle = COLOR;
     // front quad
-    const point1 = screen({ x: -0.5, y: 0.5 }, SCREEN_DIMENSIONS);
-    const point2 = screen({ x: 0.5, y: 0.5 }, SCREEN_DIMENSIONS);
-    const point3 = screen({ x: 0.5, y: -0.5 }, SCREEN_DIMENSIONS);
-    const point4 = screen({ x: -0.5, y: -0.5 }, SCREEN_DIMENSIONS);
+    const point1 = screen(
+      project({ x: -0.5, y: 0.5, z: 1.0 }),
+      SCREEN_DIMENSIONS,
+    );
+    const point2 = screen(
+      project({ x: 0.5, y: 0.5, z: 1.0 }),
+      SCREEN_DIMENSIONS,
+    );
+    const point3 = screen(
+      project({ x: 0.5, y: -0.5, z: 1.0 }),
+      SCREEN_DIMENSIONS,
+    );
+    const point4 = screen(
+      project({ x: -0.5, y: -0.5, z: 1.0 }),
+      SCREEN_DIMENSIONS,
+    );
 
     // back quad
-    const point5 = screen({ x: -0.5, y: 0.5 }, SCREEN_DIMENSIONS);
-    const point6 = screen({ x: 0.5, y: 0.5 }, SCREEN_DIMENSIONS);
-    const point7 = screen({ x: 0.5, y: -0.5 }, SCREEN_DIMENSIONS);
-    const point8 = screen({ x: -0.5, y: -0.5 }, SCREEN_DIMENSIONS);
+    const point5 = screen(
+      project({ x: -0.5, y: 0.5, z: 2.0 }),
+      SCREEN_DIMENSIONS,
+    );
+    const point6 = screen(
+      project({ x: 0.5, y: 0.5, z: 2.0 }),
+      SCREEN_DIMENSIONS,
+    );
+    const point7 = screen(
+      project({ x: 0.5, y: -0.5, z: 2.0 }),
+      SCREEN_DIMENSIONS,
+    );
+    const point8 = screen(
+      project({ x: -0.5, y: -0.5, z: 2.0 }),
+      SCREEN_DIMENSIONS,
+    );
 
     context2d.rect(point1.x, point1.y, POINT_SIZE, POINT_SIZE);
     context2d.rect(point2.x, point2.y, POINT_SIZE, POINT_SIZE);
