@@ -8,30 +8,8 @@ import {
 } from './constants';
 import { CUBE } from './cube';
 import { Mat4x4 } from './mat4x4';
-import type { Dimensions, Point2D, Point3D, Shape } from './types';
-
-/**
- * Project the 3D point onto the XY-plane
- */
-export const project = ({ x, y, z }: Point3D): Point2D => {
-  return { x: x / z, y: y / z };
-};
-
-/**
- * Convert NDC coordinates to screen space coordinates
- *
- * [-1, -1] -> [1, 1]
- * [ 0,  0] -> [w, h]
- */
-export const screen = (
-  { x, y }: Point2D,
-  screenDimensions: Dimensions,
-): Point2D => {
-  return {
-    x: ((x + 1) / 2) * screenDimensions.width,
-    y: (1 - (y + 1) / 2) * screenDimensions.height,
-  };
-};
+import { project, screen } from './projection';
+import type { Shape } from './types';
 
 export function setupCanvas2d(element: HTMLCanvasElement) {
   element.width = CANVAS_SIZE;
