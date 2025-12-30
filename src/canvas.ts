@@ -1,7 +1,6 @@
 const COLOR = '#519872';
 const CLEAR_COLOR = '#585464';
 const CANVAS_SIZE = 800;
-const POINT_SIZE = 10;
 
 type Dimensions = {
   width: number;
@@ -46,14 +45,25 @@ export const screen = (
 };
 
 const POINTS: Point3D[] = [
+  // front face
   { x: -0.5, y: 0.5, z: 1.0 },
   { x: 0.5, y: 0.5, z: 1.0 },
   { x: 0.5, y: -0.5, z: 1.0 },
   { x: -0.5, y: -0.5, z: 1.0 },
+  // back face
   { x: -0.5, y: 0.5, z: 2.0 },
   { x: 0.5, y: 0.5, z: 2.0 },
   { x: 0.5, y: -0.5, z: 2.0 },
   { x: -0.5, y: -0.5, z: 2.0 },
+];
+
+const FACES = [
+  [0, 1, 2, 3],
+  [4, 5, 6, 7],
+  [0, 4],
+  [1, 5],
+  [2, 6],
+  [3, 7],
 ];
 
 export function setupCanvas2d(element: HTMLCanvasElement) {
@@ -69,14 +79,24 @@ export function setupCanvas2d(element: HTMLCanvasElement) {
     context2d.fillStyle = CLEAR_COLOR;
     context2d.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-    context2d.fillStyle = COLOR;
+    context2d.strokeStyle = COLOR;
+    context2d.lineWidth = 2;
 
-    for (const point of POINTS) {
-      const p = screen(project(point), SCREEN_DIMENSIONS);
-      context2d.rect(p.x, p.y, POINT_SIZE, POINT_SIZE);
+    context2d.beginPath();
+
+    for (const face of FACES) {
+      for (let idx = 0; idx < face.length; idx++) {
+        const from = screen(project(POINTS[face[idx]]), SCREEN_DIMENSIONS);
+        const to = screen(
+          project(POINTS[face[(idx + 1) % face.length]]),
+          SCREEN_DIMENSIONS,
+        );
+
+        context2d.moveTo(from.x, from.y);
+        context2d.lineTo(to.x, to.y);
+      }
     }
-
-    context2d.fill();
+    context2d.stroke();
   };
 
   init();
