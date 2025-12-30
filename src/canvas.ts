@@ -33,20 +33,6 @@ export const screen = (
   };
 };
 
-const rotate_xz = ({ x, y, z }: Point3D, angle: number) => {
-  const c = Math.cos(angle);
-  const s = Math.sin(angle);
-  return {
-    x: x * c - z * s,
-    y,
-    z: x * s + z * c,
-  };
-};
-
-const translate = ({ x, y, z }: Point3D, dz: number) => {
-  return { x, y, z: z + dz };
-};
-
 export function setupCanvas2d(element: HTMLCanvasElement) {
   element.width = CANVAS_SIZE;
   element.height = CANVAS_SIZE;
@@ -72,7 +58,10 @@ export function setupCanvas2d(element: HTMLCanvasElement) {
     context2d.lineWidth = 2;
 
     angle += (Math.PI * dt) / 2;
-    const rotationMatrix = Mat4x4.fromRotationXZ(angle);
+    const transformMatrix = Mat4x4.fromTransformXZ(
+      { dx: 0, dy: 0, dz: 2.0 },
+      angle,
+    );
     context2d.beginPath();
 
     for (const face of shape.faces) {
@@ -81,11 +70,11 @@ export function setupCanvas2d(element: HTMLCanvasElement) {
         const to = shape.vertices[face[(idx + 1) % face.length]];
 
         const projectedFrom = screen(
-          project(translate(rotationMatrix.multiplyPoint(from), 2.0)),
+          project(transformMatrix.multiplyPoint(from)),
           SCREEN_DIMENSIONS,
         );
         const projectedTo = screen(
-          project(translate(rotationMatrix.multiplyPoint(to), 2.0)),
+          project(transformMatrix.multiplyPoint(to)),
           SCREEN_DIMENSIONS,
         );
 
