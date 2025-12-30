@@ -7,6 +7,7 @@ import {
   SCREEN_DIMENSIONS,
 } from './constants';
 import { CUBE } from './cube';
+import { Mat4x4 } from './mat4x4';
 import type { Dimensions, Point2D, Point3D, Shape } from './types';
 
 /**
@@ -71,6 +72,7 @@ export function setupCanvas2d(element: HTMLCanvasElement) {
     context2d.lineWidth = 2;
 
     angle += (Math.PI * dt) / 2;
+    const rotationMatrix = Mat4x4.fromRotationXZ(angle);
     context2d.beginPath();
 
     for (const face of shape.faces) {
@@ -79,11 +81,11 @@ export function setupCanvas2d(element: HTMLCanvasElement) {
         const to = shape.vertices[face[(idx + 1) % face.length]];
 
         const projectedFrom = screen(
-          project(translate(rotate_xz(from, angle), 2.0)),
+          project(translate(rotationMatrix.multiplyPoint(from), 2.0)),
           SCREEN_DIMENSIONS,
         );
         const projectedTo = screen(
-          project(translate(rotate_xz(to, angle), 2.0)),
+          project(translate(rotationMatrix.multiplyPoint(to), 2.0)),
           SCREEN_DIMENSIONS,
         );
 

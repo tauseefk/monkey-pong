@@ -16,3 +16,9 @@ export type Shape = {
   vertices: Point3D[];
   faces: number[][];
 };
+
+export type Translation = {
+  dx: number;
+  dy: number;
+  dz: number;
+};
