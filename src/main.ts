@@ -1,15 +1,24 @@
-import "./style.css";
+import { setupCanvas2d } from './canvas';
+import './style.css';
 
-const root = document.querySelector<HTMLDivElement>("#app");
+const root = document.querySelector<HTMLDivElement>('#app');
 
 if (!root) {
-	throw new Error("No root to bind");
+  throw new Error('No root to bind');
 }
 
 root.innerHTML = `
   <div>
     <div class="card">
-      <button id="counter" type="button">Potato</button>
+      <canvas id="canvas-2d" />
     </div>
   </div>
 `;
+
+const canvas2d: HTMLCanvasElement | null = document.querySelector('#canvas-2d');
+
+if (!canvas2d) {
+  throw new Error('No root to bind');
+}
+
+setupCanvas2d(canvas2d);
