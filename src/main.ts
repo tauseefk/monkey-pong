@@ -18,7 +18,7 @@ root.innerHTML = `
 const canvas2d: HTMLCanvasElement | null = document.querySelector('#canvas-2d');
 
 if (!canvas2d) {
-  throw new Error('No root to bind');
+  throw new Error('No element to bind');
 }
 
 setupCanvas2d(canvas2d);

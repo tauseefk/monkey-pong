@@ -45,6 +45,17 @@ export const screen = (
   };
 };
 
+const POINTS: Point3D[] = [
+  { x: -0.5, y: 0.5, z: 1.0 },
+  { x: 0.5, y: 0.5, z: 1.0 },
+  { x: 0.5, y: -0.5, z: 1.0 },
+  { x: -0.5, y: -0.5, z: 1.0 },
+  { x: -0.5, y: 0.5, z: 2.0 },
+  { x: 0.5, y: 0.5, z: 2.0 },
+  { x: 0.5, y: -0.5, z: 2.0 },
+  { x: -0.5, y: -0.5, z: 2.0 },
+];
+
 export function setupCanvas2d(element: HTMLCanvasElement) {
   const init = () => {
     element.width = CANVAS_SIZE;
@@ -59,51 +70,11 @@ export function setupCanvas2d(element: HTMLCanvasElement) {
     context2d.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
     context2d.fillStyle = COLOR;
-    // front quad
-    const point1 = screen(
-      project({ x: -0.5, y: 0.5, z: 1.0 }),
-      SCREEN_DIMENSIONS,
-    );
-    const point2 = screen(
-      project({ x: 0.5, y: 0.5, z: 1.0 }),
-      SCREEN_DIMENSIONS,
-    );
-    const point3 = screen(
-      project({ x: 0.5, y: -0.5, z: 1.0 }),
-      SCREEN_DIMENSIONS,
-    );
-    const point4 = screen(
-      project({ x: -0.5, y: -0.5, z: 1.0 }),
-      SCREEN_DIMENSIONS,
-    );
 
-    // back quad
-    const point5 = screen(
-      project({ x: -0.5, y: 0.5, z: 2.0 }),
-      SCREEN_DIMENSIONS,
-    );
-    const point6 = screen(
-      project({ x: 0.5, y: 0.5, z: 2.0 }),
-      SCREEN_DIMENSIONS,
-    );
-    const point7 = screen(
-      project({ x: 0.5, y: -0.5, z: 2.0 }),
-      SCREEN_DIMENSIONS,
-    );
-    const point8 = screen(
-      project({ x: -0.5, y: -0.5, z: 2.0 }),
-      SCREEN_DIMENSIONS,
-    );
-
-    context2d.rect(point1.x, point1.y, POINT_SIZE, POINT_SIZE);
-    context2d.rect(point2.x, point2.y, POINT_SIZE, POINT_SIZE);
-    context2d.rect(point3.x, point3.y, POINT_SIZE, POINT_SIZE);
-    context2d.rect(point4.x, point4.y, POINT_SIZE, POINT_SIZE);
-
-    context2d.rect(point5.x, point5.y, POINT_SIZE, POINT_SIZE);
-    context2d.rect(point6.x, point6.y, POINT_SIZE, POINT_SIZE);
-    context2d.rect(point7.x, point7.y, POINT_SIZE, POINT_SIZE);
-    context2d.rect(point8.x, point8.y, POINT_SIZE, POINT_SIZE);
+    for (const point of POINTS) {
+      const p = screen(project(point), SCREEN_DIMENSIONS);
+      context2d.rect(p.x, p.y, POINT_SIZE, POINT_SIZE);
+    }
 
     context2d.fill();
   };
