@@ -66,12 +66,17 @@ const FACES = [
   [3, 7],
 ];
 
+const FPS = 60;
+const MILLIS_PER_FRAME = 1000;
+
 export function setupCanvas2d(element: HTMLCanvasElement) {
+  let context2d: CanvasRenderingContext2D | null = null;
+
   const init = () => {
     element.width = CANVAS_SIZE;
     element.height = CANVAS_SIZE;
 
-    const context2d = element.getContext('2d');
+    context2d = element.getContext('2d');
     if (!context2d) {
       throw new Error('Failed to get drawing context');
     }
@@ -81,6 +86,12 @@ export function setupCanvas2d(element: HTMLCanvasElement) {
 
     context2d.strokeStyle = COLOR;
     context2d.lineWidth = 2;
+  };
+
+  const draw = () => {
+    if (!context2d) {
+      throw new Error('Failed to get drawing context');
+    }
 
     context2d.beginPath();
 
@@ -97,7 +108,11 @@ export function setupCanvas2d(element: HTMLCanvasElement) {
       }
     }
     context2d.stroke();
+
+    setTimeout(draw, FPS / MILLIS_PER_FRAME);
   };
 
   init();
+
+  draw();
 }
