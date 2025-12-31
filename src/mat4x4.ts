@@ -78,4 +78,18 @@ export class Mat4x4 {
 
     return result;
   }
+
+  /**
+   * Returns the matrix in column-major order.
+   */
+  toFloat32Array(): Float32Array {
+    const m = this.mat;
+    // biome-ignore format: matrix layout
+    return Float32Array.from([
+      m[0]!, m[4]!, m[8]!,  m[12]!,
+      m[1]!, m[5]!, m[9]!,  m[13]!,
+      m[2]!, m[6]!, m[10]!, m[14]!,
+      m[3]!, m[7]!, m[11]!, m[15]!,
+    ]);
+  }
 }
