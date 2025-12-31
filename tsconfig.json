@@ -9,7 +9,8 @@
       "DOM.Iterable"
     ],
     "types": [
-      "vite/client"
+      "vite/client",
+      "@webgpu/types"
     ],
     "skipLibCheck": true,
     /* Bundler mode */

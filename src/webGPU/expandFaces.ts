@@ -4,7 +4,7 @@ import type { Shape } from '../types';
  * Expands face indices to line-list vertices.
  * For each quad face, generates lines for the 4 edges.
  */
-export const expandFacesToLines = (shape: Shape): Float32Array => {
+export const expandFacesToLines = (shape: Shape): Float32Array<ArrayBuffer> => {
   const { vertices, faces } = shape;
 
   const lineVertices: number[] = [];

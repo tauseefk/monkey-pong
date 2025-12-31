@@ -4,8 +4,8 @@ import type { Point4D, Shape } from '../types';
 import { expandFacesToLines } from './expandFaces';
 import type { GPUContext } from './gpuContext';
 import { createPipeline } from './gpuUtils';
+import { hexToRgb } from './hexToRgb';
 import { fragmentShader, vertexShader } from './shaders/wireframe';
-import { hexToRgb } from './utils';
 
 export type WireframeRenderParams = {
   matrix: Mat4x4;

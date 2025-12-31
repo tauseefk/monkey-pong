@@ -1,3 +1,5 @@
+/** biome-ignore-all lint/style/noNonNullAssertion: array indexing is okay here */
+
 import type { Point3D, Translation } from './types';
 
 /**
@@ -82,7 +84,7 @@ export class Mat4x4 {
   /**
    * Returns the matrix in column-major order.
    */
-  toFloat32Array(): Float32Array {
+  toFloat32Array(): Float32Array<ArrayBuffer> {
     const m = this.mat;
     // biome-ignore format: matrix layout
     return Float32Array.from([

@@ -1,9 +1,17 @@
 import { setupCanvas2d } from './canvas2d';
 import { setupCanvasWebGPU } from './canvasWebGPU';
-import { FPS, MILLIS_PER_FRAME } from './constants';
+import {
+  FPS,
+  ID_CANVAS_2D_TARGET,
+  ID_WEBGPU_TARGET,
+  MILLIS_PER_FRAME,
+} from './constants';
 import { CUBE } from './cube';
+import SUZANNE from './suzanne.json';
 import { Mat4x4 } from './mat4x4';
 import './style.css';
+import { RenderMode } from './types';
+import { getRenderMode, setupUI } from './ui';
 
 const root = document.querySelector<HTMLDivElement>('#app');
 
@@ -12,45 +20,45 @@ if (!root) {
 }
 
 root.innerHTML = `
-  <div>
-    <div class="card">
-      <div>
-        <canvas id="canvas-2d" />
-      </div>
-      <div>
-        <canvas id="canvas-webgpu" />
-      </div>
+  <div class="card">
+    <div>
+      <canvas id="canvas-2d" />
+    </div>
+    <div>
+      <canvas id="canvas-webgpu" />
+    </div>
+    <div id="render-mode-group" role="group" aria-label="Render mode">
+      <button data-mode="canvas-2d">Canvas2D</button>
+      <button data-mode="canvas-webgpu">WebGPU</button>
     </div>
   </div>
 `;
 
-const canvas2d: HTMLCanvasElement | null = document.querySelector('#canvas-2d');
+const canvas2d: HTMLCanvasElement | null = document.getElementById(
+  ID_CANVAS_2D_TARGET,
+) as HTMLCanvasElement;
 
 if (!canvas2d) {
   throw new Error('No element to bind');
 }
 
-const drawCanvas2d = setupCanvas2d(canvas2d, CUBE);
+const drawCanvas2d = setupCanvas2d(canvas2d, SUZANNE);
 
-const canvasWebGPU: HTMLCanvasElement | null =
-  document.querySelector('#canvas-webgpu');
+const canvasWebGPU: HTMLCanvasElement | null = document.getElementById(
+  ID_WEBGPU_TARGET,
+) as HTMLCanvasElement;
 
 if (!canvasWebGPU) {
   throw new Error('No element to bind');
 }
 
-const drawCanvasWebGPU = await setupCanvasWebGPU(canvasWebGPU, CUBE);
+const drawCanvasWebGPU = await setupCanvasWebGPU(canvasWebGPU, SUZANNE);
+
+setupUI(canvas2d, canvasWebGPU);
 
 /////////////
 // DRAWING //
 /////////////
-
-const RenderMode = {
-  Canvas2D: 'canvas2d',
-  WebGPU: 'webgpu',
-} as const;
-
-const renderMode = RenderMode.Canvas2D;
 
 let angle = 0;
 const dt = 1 / FPS;
@@ -62,13 +70,9 @@ function draw() {
     angle,
   );
 
-  if (renderMode === RenderMode.Canvas2D) {
-    canvasWebGPU?.classList.add('hidden');
-    canvas2d?.classList.remove('hidden');
+  if (getRenderMode() === RenderMode.Canvas2D) {
     drawCanvas2d(transformMatrix);
   } else {
-    canvas2d?.classList.add('hidden');
-    canvasWebGPU?.classList.remove('hidden');
     drawCanvasWebGPU(transformMatrix);
   }
 
