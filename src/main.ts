@@ -6,9 +6,8 @@ import {
   ID_WEBGPU_TARGET,
   MILLIS_PER_FRAME,
 } from './constants';
-import { CUBE } from './cube';
-import SUZANNE from './suzanne.json';
 import { Mat4x4 } from './mat4x4';
+import SUZANNE from './suzanne.json';
 import './style.css';
 import { RenderMode } from './types';
 import { getRenderMode, setupUI } from './ui';
