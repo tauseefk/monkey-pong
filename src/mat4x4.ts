@@ -19,6 +19,44 @@ export class Mat4x4 {
     ];
   }
 
+  static identity(): Mat4x4 {
+    return new Mat4x4();
+  }
+
+  static rotation(angles: [number, number, number] = [0, 0, 0]): Mat4x4 {
+    const [rx, ry, rz] = angles;
+
+    const cx = Math.cos(rx);
+    const sx = Math.sin(rx);
+    const cy = Math.cos(ry);
+    const sy = Math.sin(ry);
+    const cz = Math.cos(rz);
+    const sz = Math.sin(rz);
+
+    // Rz * Ry * Rx composed directly
+    const m = new Mat4x4();
+    // biome-ignore format: matrix layout
+    m.mat = [
+      cz * cy,  cz * sy * sx - sz * cx,  cz * sy * cx + sz * sx,  0,
+      sz * cy,  sz * sy * sx + cz * cx,  sz * sy * cx - cz * sx,  0,
+         -sy,                cy * sx,                cy * cx,  0,
+           0,                      0,                      0,  1,
+    ];
+    return m;
+  }
+
+  static translation(dx: number, dy: number, dz: number): Mat4x4 {
+    const m = new Mat4x4();
+    // biome-ignore format: matrix layout
+    m.mat = [
+      1, 0, 0, dx,
+      0, 1, 0, dy,
+      0, 0, 1, dz,
+      0, 0, 0,  1,
+    ];
+    return m;
+  }
+
   static fromTransformXZ({ dx, dy, dz }: Translation, angle: number) {
     const mRotation = new Mat4x4();
     const c = Math.cos(angle);

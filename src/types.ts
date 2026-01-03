@@ -1,5 +1,3 @@
-import { ID_CANVAS_2D_TARGET, ID_WEBGPU_TARGET } from './constants';
-
 export type Dimensions = {
   width: number;
   height: number;
@@ -29,9 +27,3 @@ export type Translation = {
   dz: number;
 };
 
-export const RenderMode = {
-  Canvas2D: ID_CANVAS_2D_TARGET,
-  WebGPU: ID_WEBGPU_TARGET,
-} as const;
-
-export type RenderMode = (typeof RenderMode)[keyof typeof RenderMode];

@@ -1,7 +1,6 @@
+import type { ColorRGB } from '../colors';
 import { CLEAR_COLOR, COLOR } from '../constants';
 import type { Mat4x4 } from '../mat4x4';
-import type { Point4D, Shape } from '../types';
-import { expandFacesToLines } from './expandFaces';
 import type { GPUContext } from './gpuContext';
 import { createPipeline } from './gpuUtils';
 import { hexToRgb } from './hexToRgb';
@@ -9,12 +8,11 @@ import { fragmentShader, vertexShader } from './shaders/wireframe';
 
 export type WireframeRenderParams = {
   matrix: Mat4x4;
-  color?: Point4D;
+  color?: ColorRGB;
 };
 
 type WireframeGPUConfig = {
   device: GPUDevice;
-  context: GPUCanvasContext;
   pipeline: GPURenderPipeline;
   vertexBuffer: GPUBuffer;
   vertexUniformBuffer: GPUBuffer;
@@ -23,8 +21,50 @@ type WireframeGPUConfig = {
   vertexCount: number;
 };
 
+export type Frame = {
+  passEncoder: GPURenderPassEncoder;
+  finish(): void;
+};
+
 const CLEAR_COLOR_RGB = hexToRgb(CLEAR_COLOR);
 const LINE_COLOR_RGB = hexToRgb(COLOR);
+
+export function beginFrame(
+  device: GPUDevice,
+  context: GPUCanvasContext,
+): Frame {
+  const commandEncoder = device.createCommandEncoder({
+    label: 'wireframe_command_encoder',
+  });
+
+  const canvasTexture = context.getCurrentTexture();
+  const canvasView = canvasTexture.createView();
+
+  const passEncoder = commandEncoder.beginRenderPass({
+    label: 'wireframe_render_pass',
+    colorAttachments: [
+      {
+        view: canvasView,
+        loadOp: 'clear',
+        storeOp: 'store',
+        clearValue: {
+          r: CLEAR_COLOR_RGB[0],
+          g: CLEAR_COLOR_RGB[1],
+          b: CLEAR_COLOR_RGB[2],
+          a: CLEAR_COLOR_RGB[3],
+        },
+      },
+    ],
+  });
+
+  return {
+    passEncoder,
+    finish() {
+      passEncoder.end();
+      device.queue.submit([commandEncoder.finish()]);
+    },
+  };
+}
 
 export class WireframeRenderer {
   private config: WireframeGPUConfig;
@@ -33,10 +73,12 @@ export class WireframeRenderer {
     this.config = config;
   }
 
-  static init(shape: Shape, gpuContext: GPUContext): WireframeRenderer {
-    const { device, context } = gpuContext;
+  static init(
+    vertexCapacity: number,
+    gpuContext: GPUContext,
+  ): WireframeRenderer {
+    const { device } = gpuContext;
 
-    // Create pipeline with line-list topology and 3D vertices
     const pipeline = createPipeline(
       device,
       { entryPoint: 'vs_main', code: vertexShader },
@@ -48,35 +90,27 @@ export class WireframeRenderer {
       },
     );
 
-    // Expand faces to line vertices
-    const lineVertices = expandFacesToLines(shape);
-    const vertexCount = lineVertices.length / 3;
+    // 3 floats per vertex, 4 bytes per float
+    const bufferSize = vertexCapacity * 3 * 4;
 
-    // Create vertex buffer
     const vertexBuffer = device.createBuffer({
       label: 'wireframe_vertex_buffer',
-      size: lineVertices.byteLength,
+      size: bufferSize,
       usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
     });
 
-    device.queue.writeBuffer(vertexBuffer, 0, lineVertices);
-
-    // Create uniform buffers
-    // Vertex uniform: mat4x4 (64 bytes)
     const vertexUniformBuffer = device.createBuffer({
       label: 'wireframe_vertex_uniform',
       size: 64,
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
     });
 
-    // Fragment uniform: vec4 color (16 bytes)
     const fragmentUniformBuffer = device.createBuffer({
       label: 'wireframe_fragment_uniform',
       size: 16,
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
     });
 
-    // Create bind group
     const bindGroup = device.createBindGroup({
       label: 'wireframe_bind_group',
       layout: pipeline.getBindGroupLayout(0),
@@ -88,20 +122,26 @@ export class WireframeRenderer {
 
     return new WireframeRenderer({
       device,
-      context,
       pipeline,
       vertexBuffer,
       vertexUniformBuffer,
       fragmentUniformBuffer,
       bindGroup,
-      vertexCount,
+      vertexCount: 0,
     });
   }
 
-  render({ matrix, color }: WireframeRenderParams): void {
+  setVertices(data: Float32Array<ArrayBuffer>, vertexCount: number): void {
+    this.config.device.queue.writeBuffer(this.config.vertexBuffer, 0, data);
+    this.config.vertexCount = vertexCount;
+  }
+
+  draw(
+    pass: GPURenderPassEncoder,
+    { matrix, color }: WireframeRenderParams,
+  ): void {
     const {
       device,
-      context,
       pipeline,
       vertexBuffer,
       vertexUniformBuffer,
@@ -110,43 +150,18 @@ export class WireframeRenderer {
       vertexCount,
     } = this.config;
 
+    if (vertexCount === 0) return;
+
     device.queue.writeBuffer(vertexUniformBuffer, 0, matrix.toFloat32Array());
 
     const colorArray = color
-      ? new Float32Array([color.x, color.y, color.z, color.w])
-      : new Float32Array(LINE_COLOR_RGB);
+      ? Float32Array.from(color)
+      : Float32Array.from(LINE_COLOR_RGB);
     device.queue.writeBuffer(fragmentUniformBuffer, 0, colorArray);
 
-    const commandEncoder = device.createCommandEncoder({
-      label: 'wireframe_command_encoder',
-    });
-
-    const canvasTexture = context.getCurrentTexture();
-    const canvasView = canvasTexture.createView();
-
-    const renderPass = commandEncoder.beginRenderPass({
-      label: 'wireframe_render_pass',
-      colorAttachments: [
-        {
-          view: canvasView,
-          loadOp: 'clear',
-          storeOp: 'store',
-          clearValue: {
-            r: CLEAR_COLOR_RGB[0],
-            g: CLEAR_COLOR_RGB[1],
-            b: CLEAR_COLOR_RGB[2],
-            a: CLEAR_COLOR_RGB[3],
-          },
-        },
-      ],
-    });
-
-    renderPass.setPipeline(pipeline);
-    renderPass.setVertexBuffer(0, vertexBuffer);
-    renderPass.setBindGroup(0, bindGroup);
-    renderPass.draw(vertexCount);
-    renderPass.end();
-
-    device.queue.submit([commandEncoder.finish()]);
+    pass.setPipeline(pipeline);
+    pass.setVertexBuffer(0, vertexBuffer);
+    pass.setBindGroup(0, bindGroup);
+    pass.draw(vertexCount);
   }
 }
