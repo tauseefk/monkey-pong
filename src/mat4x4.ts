@@ -39,8 +39,8 @@ export class Mat4x4 {
     m.mat = [
       cz * cy,  cz * sy * sx - sz * cx,  cz * sy * cx + sz * sx,  0,
       sz * cy,  sz * sy * sx + cz * cx,  sz * sy * cx - cz * sx,  0,
-         -sy,                cy * sx,                cy * cx,  0,
-           0,                      0,                      0,  1,
+          -sy,                 cy * sx,                 cy * cx,  0,
+            0,                       0,                       0,  1,
     ];
     return m;
   }
@@ -57,29 +57,25 @@ export class Mat4x4 {
     return m;
   }
 
-  static fromTransformXZ({ dx, dy, dz }: Translation, angle: number) {
-    const mRotation = new Mat4x4();
+  static fromTransform(
+    { dx, dy, dz }: Translation,
+    { axis, angle }: { axis: Point3D; angle: number },
+  ): Mat4x4 {
+    const m = new Mat4x4();
+    const { x, y, z } = axis;
     const c = Math.cos(angle);
     const s = Math.sin(angle);
+    const t = 1 - c;
 
+    // Rodrigues' rotation formula + translation, row-major
     // biome-ignore format: matrix layout
-    mRotation.mat = [
-      c, 0, -s, 0,
-      0, 1,  0, 0,
-      s, 0,  c, 0,
-      0, 0,  0, 1,
+    m.mat = [
+      t*x*x +   c, t*x*y  - s*z, t*x*z + s*y, dx,
+      t*x*y + s*z, t*y*y  +   c, t*y*z - s*x, dy,
+      t*x*z - s*y, t*y*z  + s*x, t*z*z +   c, dz,
+                0,            0,           0,  1,
     ];
-
-    const mTranslation = new Mat4x4();
-    // biome-ignore format: matrix layout
-    mTranslation.mat = [
-      1, 0, 0, dx,
-      0, 1, 0, dy,
-      0, 0, 1, dz,
-      0, 0, 0,  1,
-    ];
-
-    return mTranslation.multiply(mRotation);
+    return m;
   }
 
   /**
