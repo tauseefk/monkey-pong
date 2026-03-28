@@ -27,12 +27,13 @@ export class TunnelState {
 
   private initSquares(): void {
     const { squareCount, zNear, zFar } = this.config;
-    const spacing = (zFar - zNear) / squareCount;
+    const zStart = zNear + 2;
+    const spacing = (zFar - zStart) / squareCount;
 
     this.squares = [];
     for (let i = 0; i < squareCount; i++) {
       this.squares.push({
-        z: zNear + (i + 1) * (spacing / 2),
+        z: zStart + i * spacing,
         rotX: randomTilt(),
         rotY: randomTilt(),
         rotZ: randomTilt(),
