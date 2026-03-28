@@ -32,20 +32,24 @@ const drawCanvasWebGPU = await setupCanvasWebGPU(canvasWebGPU, SUZANNE);
 // DRAWING //
 /////////////
 
-const BOUNDS = 1.8;
+const BOUNDS = 3.0;
 const ROTATION_AXIS = { x: 0, y: -1, z: 0 };
 
 let vx = 2.8;
 let vy = 2.0;
 let dx = 0;
 let dy = 0;
+let dz = 4.0;
+let zPhase = 0;
 let angle = 0;
 const dt = 2 / FPS;
 
 function draw() {
   angle = (angle + (Math.PI * dt) / 2) % (2 * Math.PI);
+  zPhase = (zPhase + dt * 0.3) % (2 * Math.PI);
   dx += vx * dt;
   dy += vy * dt;
+  dz = 4.0 + Math.sin(zPhase) * 0.5;
 
   if (dx > BOUNDS || dx < -BOUNDS) {
     vx = -vx;
@@ -55,7 +59,7 @@ function draw() {
   }
 
   const modelTransformMatrix = Mat4x4.fromTransform(
-    { dx: 0, dy: 0, dz: 4.0 },
+    { dx, dy, dz },
     { axis: ROTATION_AXIS, angle },
   );
 
