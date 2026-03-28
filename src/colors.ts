@@ -1,4 +1,4 @@
-import { hexToRgb } from "./webGPU/hexToRgb";
+import { hexToRgb } from './webGPU/hexToRgb';
 
 export const Colors = {
   Periwinkle: '#B7C0EE',

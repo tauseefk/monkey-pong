@@ -26,4 +26,3 @@ export type Translation = {
   dy: number;
   dz: number;
 };
-
