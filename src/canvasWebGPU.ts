@@ -30,8 +30,8 @@ export async function setupCanvasWebGPU(
   const maxTunnelVertices = 100 * VERTICES_PER_SQUARE;
   const tunnelRenderer = WireframeRenderer.init(maxTunnelVertices, gpuContext);
 
-  const draw = (transformMatrix: Mat4x4, dt: number) => {
-    tunnel.update(dt);
+  const draw = (transformMatrix: Mat4x4, dt: number, ramp: number) => {
+    tunnel.update(dt * ramp);
     const tunnelVertices = tunnel.computeVertices();
     tunnelRenderer.setVertices(tunnelVertices, tunnelVertices.length / 3);
 
