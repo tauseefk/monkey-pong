@@ -35,7 +35,7 @@ export async function setupCanvasWebGPU(
     const tunnelVertices = tunnel.computeVertices();
     tunnelRenderer.setVertices(tunnelVertices, tunnelVertices.length / 3);
 
-    const frame = beginFrame(gpuContext.device, gpuContext.context);
+    const frame = beginFrame(gpuContext);
     tunnelRenderer.draw(frame.passEncoder, {
       matrix: Mat4x4.identity(),
       color: ColorsRGB.Snow,

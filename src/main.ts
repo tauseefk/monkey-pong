@@ -34,7 +34,8 @@ const drawCanvasWebGPU = await setupCanvasWebGPU(canvasWebGPU, SUZANNE);
 
 const BOUNDS = 3.0;
 const ROTATION_AXIS = { x: 0, y: -1, z: 0 };
-const RAMP_DURATION = 3.0;
+const RAMP_DELAY = 2.0;
+const RAMP_DURATION = 5.0;
 
 let vx = 2.8;
 let vy = 2.0;
@@ -48,7 +49,7 @@ const dt = 2 / FPS;
 
 function draw() {
   elapsed += dt;
-  const ramp = Math.min(elapsed / RAMP_DURATION, 1.0);
+  const ramp = Math.min(Math.max(elapsed - RAMP_DELAY, 0) / RAMP_DURATION, 1.0);
 
   angle = (angle + (Math.PI * dt * ramp) / 2) % (2 * Math.PI);
   zPhase = (zPhase + dt * 0.3 * ramp) % (2 * Math.PI);

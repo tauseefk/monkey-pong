@@ -1,7 +1,10 @@
+export const MSAA_SAMPLE_COUNT = 4;
+
 export type GPUContext = {
   device: GPUDevice;
   context: GPUCanvasContext;
   format: GPUTextureFormat;
+  msaaTexture: GPUTexture;
 };
 
 export async function initGPUContext(
@@ -30,5 +33,13 @@ export async function initGPUContext(
     usage: GPUTextureUsage.RENDER_ATTACHMENT,
   });
 
-  return { device, context, format };
+  const msaaTexture = device.createTexture({
+    label: 'msaa_texture',
+    size: [canvas.width, canvas.height],
+    sampleCount: MSAA_SAMPLE_COUNT,
+    format,
+    usage: GPUTextureUsage.RENDER_ATTACHMENT,
+  });
+
+  return { device, context, format, msaaTexture };
 }

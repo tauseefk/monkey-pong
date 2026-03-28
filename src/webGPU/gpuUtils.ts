@@ -104,6 +104,7 @@ export function createPipeline(
           },
         }
       : {}),
+    multisample: { count: 4 },
     layout: 'auto',
   });
 

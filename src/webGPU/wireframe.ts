@@ -29,22 +29,22 @@ export type Frame = {
 const CLEAR_COLOR_RGB = hexToRgb(CLEAR_COLOR);
 const LINE_COLOR_RGB = hexToRgb(COLOR);
 
-export function beginFrame(
-  device: GPUDevice,
-  context: GPUCanvasContext,
-): Frame {
+export function beginFrame(gpuContext: GPUContext): Frame {
+  const { device, context, msaaTexture } = gpuContext;
   const commandEncoder = device.createCommandEncoder({
     label: 'wireframe_command_encoder',
   });
 
   const canvasTexture = context.getCurrentTexture();
-  const canvasView = canvasTexture.createView();
+  const msaaView = msaaTexture.createView();
+  const resolveTarget = canvasTexture.createView();
 
   const passEncoder = commandEncoder.beginRenderPass({
     label: 'wireframe_render_pass',
     colorAttachments: [
       {
-        view: canvasView,
+        view: msaaView,
+        resolveTarget,
         loadOp: 'clear',
         storeOp: 'store',
         clearValue: {

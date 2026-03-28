@@ -32,7 +32,7 @@ export class TunnelState {
     this.squares = [];
     for (let i = 0; i < squareCount; i++) {
       this.squares.push({
-        z: zNear + (i + 1) * spacing,
+        z: zNear + (i + 1) * (spacing / 2),
         rotX: randomTilt(),
         rotY: randomTilt(),
         rotZ: randomTilt(),
