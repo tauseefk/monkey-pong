@@ -7,7 +7,7 @@ export type TunnelConfig = {
 };
 
 export const DEFAULT_TUNNEL_CONFIG: TunnelConfig = {
-  squareCount: 4,
+  squareCount: 8,
   zNear: 0.3,
   zFar: 40.0,
   speed: 2.0,
