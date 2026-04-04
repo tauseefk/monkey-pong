@@ -1,7 +1,7 @@
 import type { ColorRGB } from '../colors';
 import { CLEAR_COLOR, COLOR } from '../constants';
 import type { Mat4x4 } from '../mat4x4';
-import type { GPUContext } from './gpuContext';
+import { DEPTH_FORMAT, type GPUContext } from './gpuContext';
 import { createPipeline } from './gpuUtils';
 import { hexToRgb } from './hexToRgb';
 import { fragmentShader, vertexShader } from './shaders/wireframe';
@@ -93,6 +93,7 @@ export class WireframeRenderer {
         label: 'wireframe_pipeline',
         topology: 'line-list',
         vertexFormat: 'float32x3',
+        depthFormat: DEPTH_FORMAT,
       },
     );
 

@@ -2,8 +2,8 @@ import { ColorsRGB } from './colors';
 import { CANVAS_SIZE } from './constants';
 import { Mat4x4 } from './mat4x4';
 import { VERTICES_PER_SQUARE } from './tunnel/square';
-import { TunnelState } from './tunnel/tunnel';
-import { DEFAULT_TUNNEL_CONFIG } from './tunnel/tunnelConfig';
+// import { TunnelState } from './tunnel/tunnel';
+// import { DEFAULT_TUNNEL_CONFIG } from './tunnel/tunnelConfig';
 import type { IndexedShape } from './types';
 import { initGPUContext } from './webGPU/gpuContext';
 import { SolidRenderer } from './webGPU/solid';
@@ -21,15 +21,15 @@ export async function setupCanvasWebGPU(
   const suzanneRenderer = SolidRenderer.init(shape, gpuContext);
 
   // Tunnel setup
-  const tunnelConfig = DEFAULT_TUNNEL_CONFIG;
-  const tunnel = new TunnelState(tunnelConfig);
+  // const tunnelConfig = DEFAULT_TUNNEL_CONFIG;
+  // const tunnel = new TunnelState(tunnelConfig);
   const maxTunnelVertices = 100 * VERTICES_PER_SQUARE;
   const tunnelRenderer = WireframeRenderer.init(maxTunnelVertices, gpuContext);
 
-  const draw = (transformMatrix: Mat4x4, dt: number, ramp: number) => {
-    tunnel.update(dt * ramp);
-    const tunnelVertices = tunnel.computeVertices();
-    tunnelRenderer.setVertices(tunnelVertices, tunnelVertices.length / 3);
+  const draw = (transformMatrix: Mat4x4, _dt: number, _ramp: number) => {
+    // tunnel.update(dt * ramp);
+    // const tunnelVertices = tunnel.computeVertices();
+    // tunnelRenderer.setVertices(tunnelVertices, tunnelVertices.length / 3);
 
     const frame = beginFrame(gpuContext);
     tunnelRenderer.draw(frame.passEncoder, {

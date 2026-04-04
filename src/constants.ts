@@ -9,7 +9,7 @@ export const SCREEN_DIMENSIONS: Dimensions = {
   height: CANVAS_SIZE,
 };
 
-export const FPS = 120;
+export const FPS = 60;
 export const MILLIS_PER_FRAME = 1000 / FPS;
 
 export const ID_WEBGPU_TARGET = 'canvas-webgpu';
