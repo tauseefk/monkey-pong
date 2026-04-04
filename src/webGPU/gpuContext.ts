@@ -1,10 +1,13 @@
 export const MSAA_SAMPLE_COUNT = 4;
 
+export const DEPTH_FORMAT: GPUTextureFormat = 'depth24plus';
+
 export type GPUContext = {
   device: GPUDevice;
   context: GPUCanvasContext;
   format: GPUTextureFormat;
   msaaTexture: GPUTexture;
+  depthTexture: GPUTexture;
 };
 
 export async function initGPUContext(
@@ -41,5 +44,13 @@ export async function initGPUContext(
     usage: GPUTextureUsage.RENDER_ATTACHMENT,
   });
 
-  return { device, context, format, msaaTexture };
+  const depthTexture = device.createTexture({
+    label: 'depth_texture',
+    size: [canvas.width, canvas.height],
+    sampleCount: MSAA_SAMPLE_COUNT,
+    format: DEPTH_FORMAT,
+    usage: GPUTextureUsage.RENDER_ATTACHMENT,
+  });
+
+  return { device, context, format, msaaTexture, depthTexture };
 }

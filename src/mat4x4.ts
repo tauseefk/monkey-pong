@@ -19,6 +19,26 @@ export class Mat4x4 {
     ];
   }
 
+  static perspective(
+    fovY: number,
+    aspect: number,
+    near: number,
+    far: number,
+  ): Mat4x4 {
+    const m = new Mat4x4();
+    const f = 1.0 / Math.tan(fovY / 2);
+    const nf = 1.0 / (far - near);
+
+    // biome-ignore format: matrix layout
+    m.mat = [
+      f / aspect, 0,          0,                0,
+      0,          f,          0,                0,
+      0,          0,     far * nf,  -near * far * nf,
+      0,          0,          1,                0,
+    ];
+    return m;
+  }
+
   static identity(): Mat4x4 {
     return new Mat4x4();
   }

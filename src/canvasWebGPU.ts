@@ -4,25 +4,21 @@ import { Mat4x4 } from './mat4x4';
 import { VERTICES_PER_SQUARE } from './tunnel/square';
 import { TunnelState } from './tunnel/tunnel';
 import { DEFAULT_TUNNEL_CONFIG } from './tunnel/tunnelConfig';
-import type { Shape } from './types';
-import { expandFacesToLines } from './webGPU/expandFaces';
+import type { IndexedShape } from './types';
 import { initGPUContext } from './webGPU/gpuContext';
+import { SolidRenderer } from './webGPU/solid';
 import { beginFrame, WireframeRenderer } from './webGPU/wireframe';
 
 export async function setupCanvasWebGPU(
   element: HTMLCanvasElement,
-  shape: Shape,
+  shape: IndexedShape,
 ) {
   element.width = CANVAS_SIZE;
   element.height = CANVAS_SIZE;
 
   const gpuContext = await initGPUContext(element);
 
-  const lineVertices = expandFacesToLines(shape);
-  const vertexCount = lineVertices.length / 3;
-
-  const suzanneRenderer = WireframeRenderer.init(vertexCount, gpuContext);
-  suzanneRenderer.setVertices(lineVertices, vertexCount);
+  const suzanneRenderer = SolidRenderer.init(shape, gpuContext);
 
   // Tunnel setup
   const tunnelConfig = DEFAULT_TUNNEL_CONFIG;

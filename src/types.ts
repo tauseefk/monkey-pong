@@ -19,6 +19,13 @@ export interface Point4D extends Point3D {
 export type Shape = {
   vertices: Point3D[];
   faces: number[][];
+  normals?: Point3D[];
+};
+
+export type IndexedShape = {
+  vertices: Point3D[];
+  faces: number[][][];
+  normals: Point3D[];
 };
 
 export type Translation = {

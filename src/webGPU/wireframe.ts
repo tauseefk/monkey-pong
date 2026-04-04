@@ -30,7 +30,7 @@ const CLEAR_COLOR_RGB = hexToRgb(CLEAR_COLOR);
 const LINE_COLOR_RGB = hexToRgb(COLOR);
 
 export function beginFrame(gpuContext: GPUContext): Frame {
-  const { device, context, msaaTexture } = gpuContext;
+  const { device, context, msaaTexture, depthTexture } = gpuContext;
   const commandEncoder = device.createCommandEncoder({
     label: 'wireframe_command_encoder',
   });
@@ -55,6 +55,12 @@ export function beginFrame(gpuContext: GPUContext): Frame {
         },
       },
     ],
+    depthStencilAttachment: {
+      view: depthTexture.createView(),
+      depthLoadOp: 'clear',
+      depthStoreOp: 'store',
+      depthClearValue: 1.0,
+    },
   });
 
   return {
