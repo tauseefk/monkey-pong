@@ -1,6 +1,6 @@
 import type { ColorRGB } from '../colors';
-import { CLEAR_COLOR, COLOR } from '../constants';
-import type { Mat4x4 } from '../mat4x4';
+import { CANVAS_SIZE, CLEAR_COLOR, COLOR } from '../constants';
+import { Mat4x4 } from '../mat4x4';
 import { DEPTH_FORMAT, type GPUContext } from './gpuContext';
 import { createPipeline } from './gpuUtils';
 import { hexToRgb } from './hexToRgb';
@@ -19,6 +19,7 @@ type WireframeGPUConfig = {
   fragmentUniformBuffer: GPUBuffer;
   bindGroup: GPUBindGroup;
   vertexCount: number;
+  projectionMatrix: Mat4x4;
 };
 
 export type Frame = {
@@ -127,6 +128,13 @@ export class WireframeRenderer {
       ],
     });
 
+    const projectionMatrix = Mat4x4.perspective(
+      Math.PI / 2,
+      CANVAS_SIZE / CANVAS_SIZE,
+      0.1,
+      100,
+    );
+
     return new WireframeRenderer({
       device,
       pipeline,
@@ -135,6 +143,7 @@ export class WireframeRenderer {
       fragmentUniformBuffer,
       bindGroup,
       vertexCount: 0,
+      projectionMatrix,
     });
   }
 
@@ -155,11 +164,13 @@ export class WireframeRenderer {
       fragmentUniformBuffer,
       bindGroup,
       vertexCount,
+      projectionMatrix,
     } = this.config;
 
     if (vertexCount === 0) return;
 
-    device.queue.writeBuffer(vertexUniformBuffer, 0, matrix.toFloat32Array());
+    const mvpMatrix = projectionMatrix.multiply(matrix);
+    device.queue.writeBuffer(vertexUniformBuffer, 0, mvpMatrix.toFloat32Array());
 
     const colorArray = color
       ? Float32Array.from(color)

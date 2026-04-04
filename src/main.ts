@@ -1,5 +1,15 @@
 import { setupCanvasWebGPU } from './canvasWebGPU';
-import { FPS, ID_WEBGPU_TARGET, MILLIS_PER_FRAME } from './constants';
+import {
+  FPS,
+  ID_WEBGPU_TARGET,
+  MILLIS_PER_FRAME,
+  RAMP_DELAY,
+  RAMP_DURATION,
+  SUZANNE_BOUNDS,
+  SUZANNE_INITIAL_Z,
+  SUZANNE_ROTATION_AXIS,
+  SUZANNE_SPEED,
+} from './constants';
 import { Mat4x4 } from './mat4x4';
 import SUZANNE from './suzanne.json';
 import './style.css';
@@ -32,16 +42,11 @@ const drawCanvasWebGPU = await setupCanvasWebGPU(canvasWebGPU, SUZANNE);
 // DRAWING //
 /////////////
 
-const BOUNDS = 3.0;
-const ROTATION_AXIS = { x: 0, y: -1, z: 0 };
-const RAMP_DELAY = 2.0;
-const RAMP_DURATION = 5.0;
-
-let vx = 2.8;
-let vy = 2.0;
+let vx = SUZANNE_SPEED.x;
+let vy = SUZANNE_SPEED.y;
 let dx = 0;
 let dy = 0;
-let dz = 4.0;
+let dz = SUZANNE_INITIAL_Z;
 let zPhase = 0;
 let angle = Math.PI;
 let elapsed = 0;
@@ -55,18 +60,18 @@ function draw() {
   zPhase = (zPhase + dt * 0.3 * ramp) % (2 * Math.PI);
   dx += vx * dt * ramp;
   dy += vy * dt * ramp;
-  dz = 4.0 + Math.sin(zPhase) * 0.5;
+  dz = SUZANNE_INITIAL_Z + Math.sin(zPhase) * 2.0;
 
-  if (dx > BOUNDS || dx < -BOUNDS) {
+  if (dx > SUZANNE_BOUNDS || dx < -SUZANNE_BOUNDS) {
     vx = -vx;
   }
-  if (dy > BOUNDS || dy < -BOUNDS) {
+  if (dy > SUZANNE_BOUNDS || dy < -SUZANNE_BOUNDS) {
     vy = -vy;
   }
 
   const modelTransformMatrix = Mat4x4.fromTransform(
     { dx, dy, dz },
-    { axis: ROTATION_AXIS, angle },
+    { axis: SUZANNE_ROTATION_AXIS, angle },
   );
 
   drawCanvasWebGPU(modelTransformMatrix, dt, ramp);

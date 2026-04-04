@@ -31,10 +31,10 @@ export class Mat4x4 {
 
     // biome-ignore format: matrix layout
     m.mat = [
-      f / aspect, 0,          0,                0,
-      0,          f,          0,                0,
-      0,          0,     far * nf,  -near * far * nf,
-      0,          0,          1,                0,
+      f / aspect, 0,          0,                 0,
+      0,          f,          0,                 0,
+      0,          0,    far * nf, -near * far * nf,
+      0,          0,          1,                 0,
     ];
     return m;
   }
@@ -77,6 +77,18 @@ export class Mat4x4 {
     return m;
   }
 
+  static scale(s: number): Mat4x4 {
+    const m = new Mat4x4();
+    // biome-ignore format: matrix layout
+    m.mat = [
+      s, 0, 0, 0,
+      0, s, 0, 0,
+      0, 0, s, 0,
+      0, 0, 0, 1,
+    ];
+    return m;
+  }
+
   static fromTransform(
     { dx, dy, dz }: Translation,
     { axis, angle }: { axis: Point3D; angle: number },
@@ -107,9 +119,9 @@ export class Mat4x4 {
 
     // row-major access: m[row * 4 + col]
     return {
-      x: m[0]! * x + m[1]! * y + m[2]! * z + m[3]!,
-      y: m[4]! * x + m[5]! * y + m[6]! * z + m[7]!,
-      z: m[8]! * x + m[9]! * y + m[10]! * z + m[11]!,
+      x: m[0] * x + m[1] * y + m[2] * z + m[3],
+      y: m[4] * x + m[5] * y + m[6] * z + m[7],
+      z: m[8] * x + m[9] * y + m[10] * z + m[11],
     };
   }
 
@@ -125,10 +137,10 @@ export class Mat4x4 {
     for (let row = 0; row < 4; row++) {
       for (let col = 0; col < 4; col++) {
         result.mat[row * 4 + col] =
-          a[row * 4 + 0]! * b[0 * 4 + col]! +
-          a[row * 4 + 1]! * b[1 * 4 + col]! +
-          a[row * 4 + 2]! * b[2 * 4 + col]! +
-          a[row * 4 + 3]! * b[3 * 4 + col]!;
+          a[row * 4 + 0] * b[0 * 4 + col] +
+          a[row * 4 + 1] * b[1 * 4 + col] +
+          a[row * 4 + 2] * b[2 * 4 + col] +
+          a[row * 4 + 3] * b[3 * 4 + col];
       }
     }
 
@@ -142,10 +154,10 @@ export class Mat4x4 {
     const m = this.mat;
     // biome-ignore format: matrix layout
     return Float32Array.from([
-      m[0]!, m[4]!, m[8]!,  m[12]!,
-      m[1]!, m[5]!, m[9]!,  m[13]!,
-      m[2]!, m[6]!, m[10]!, m[14]!,
-      m[3]!, m[7]!, m[11]!, m[15]!,
+      m[0], m[4], m[8],  m[12],
+      m[1], m[5], m[9],  m[13],
+      m[2], m[6], m[10], m[14],
+      m[3], m[7], m[11], m[15],
     ]);
   }
 }

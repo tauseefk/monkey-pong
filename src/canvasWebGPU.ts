@@ -1,5 +1,5 @@
 import { ColorsRGB } from './colors';
-import { CANVAS_SIZE } from './constants';
+import { CANVAS_SIZE, SUZANNE_SCALE } from './constants';
 import { Mat4x4 } from './mat4x4';
 import { VERTICES_PER_SQUARE } from './tunnel/square';
 import { TunnelState } from './tunnel/tunnel';
@@ -18,7 +18,7 @@ export async function setupCanvasWebGPU(
 
   const gpuContext = await initGPUContext(element);
 
-  const suzanneRenderer = SolidRenderer.init(shape, gpuContext);
+  const suzanneRenderer = SolidRenderer.init(shape, gpuContext, SUZANNE_SCALE);
 
   // Tunnel setup
   const tunnelConfig = DEFAULT_TUNNEL_CONFIG;

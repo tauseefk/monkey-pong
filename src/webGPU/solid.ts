@@ -41,6 +41,7 @@ export class SolidRenderer {
   static init(
     shape: IndexedShape,
     gpuContext: GPUContext,
+    scale: number = 1,
   ): SolidRenderer {
     const { device } = gpuContext;
 
@@ -77,6 +78,15 @@ export class SolidRenderer {
 
     const triangleVertices = expandFacesToTriangles(shape);
     const vertexCount = triangleVertices.length / 6;
+
+    // Scale position components (stride 6: px, py, pz, nx, ny, nz)
+    if (scale !== 1) {
+      for (let i = 0; i < triangleVertices.length; i += 6) {
+        triangleVertices[i] *= scale;
+        triangleVertices[i + 1] *= scale;
+        triangleVertices[i + 2] *= scale;
+      }
+    }
 
     const vertexBuffer = device.createBuffer({
       label: 'solid_vertex_buffer',

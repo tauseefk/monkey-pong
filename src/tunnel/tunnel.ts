@@ -73,8 +73,8 @@ export class TunnelState {
         sq.rotZ * t,
       ]);
 
-      // Transform quad vertices: rotate, translate to z, perspective project
-      const projected: { x: number; y: number }[] = [];
+      // transform quad vertices: rotate, translate to z
+      const worldVerts: { x: number; y: number; z: number }[] = [];
       for (const localVert of QUAD_VERTICES) {
         const scaled = {
           x: localVert.x * squareSize,
@@ -82,16 +82,19 @@ export class TunnelState {
           z: localVert.z,
         };
         const rotated = rotMatrix.multiplyPoint(scaled);
-        const worldZ = rotated.z + sq.z;
-        projected.push({ x: rotated.x / worldZ, y: rotated.y / worldZ });
+        worldVerts.push({
+          x: rotated.x,
+          y: rotated.y,
+          z: rotated.z + sq.z,
+        });
       }
 
-      // Write edge vertices into output buffer
+      // write edge vertices into output buffer
       for (const edgeIdx of QUAD_EDGE_INDICES) {
-        const p = projected[edgeIdx]!;
-        out[offset++] = p.x;
-        out[offset++] = p.y;
-        out[offset++] = 1.0; // z=1.0 so shader's x/z is a no-op
+        const v = worldVerts[edgeIdx];
+        out[offset++] = v.x;
+        out[offset++] = v.y;
+        out[offset++] = v.z;
       }
     }
 
