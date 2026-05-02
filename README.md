@@ -19,7 +19,7 @@ It's currently a work in progress, A diffuse shading pipeline, and pong paddles 
 
 - Part 2 - Shape Rotation
   - [Animation](https://github.com/tauseefk/mnky/commit/a3a11b91675c329fcb5c52a9ae9e442d478959ec)
-  - [Rotation and translation](https://github.com/tauseefk/mnky/commit/a3a11b91675c329fcb5c52a9ae9e442d478959ec)
+  - [Rotation and translation](https://github.com/tauseefk/mnky/commit/ee0fbedafb5f99dbd45bf6d9427db70b477f8c39)
 
 - Part 3 - Enter the Matrix
   - [Rotation matrix](https://github.com/tauseefk/mnky/commit/56e06629906b80af94ace14e68e877c4c6b67ee8)
