@@ -8,7 +8,7 @@ It's currently a work in progress, A diffuse shading pipeline, and pong paddles 
 
 #### Code Checkpoints
 
-- Part 0 - Drawing a cube
+- Part 1 - Drawing a cube
   - [Canvas 2D Rect](https://github.com/tauseefk/mnky/commit/e731f4724ad65514a645c674fff0397aa90f9317)
   - [Drawing a point](https://github.com/tauseefk/mnky/commit/151a99ea850540cd85520efa33000ad8606467f8)
   - [Drawing quads](https://github.com/tauseefk/mnky/commit/3ce6f3e7c1abc5006212ca07a52b4427ba3c2cea)
