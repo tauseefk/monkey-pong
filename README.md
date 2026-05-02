@@ -8,16 +8,14 @@ It's currently a work in progress, A diffuse shading pipeline, and pong paddles 
 
 #### Code Checkpoints
 
-- Part 0 - Initial Commit
+- Part 0 - Drawing a cube
   - [Canvas 2D Rect](https://github.com/tauseefk/mnky/commit/e731f4724ad65514a645c674fff0397aa90f9317)
   - [Drawing a point](https://github.com/tauseefk/mnky/commit/151a99ea850540cd85520efa33000ad8606467f8)
   - [Drawing quads](https://github.com/tauseefk/mnky/commit/3ce6f3e7c1abc5006212ca07a52b4427ba3c2cea)
-
-- Part 1 - Perspective
   - [Perspective correction](https://github.com/tauseefk/mnky/commit/ae96988fad793858de3cfd94771a19f23e53eb58)
   - [Faces and lines](https://github.com/tauseefk/mnky/commit/5b18b113395a799a0b670f87d887c112bdd1eb62)
 
-- Part 2 - Shape Rotation
+- Part 2 - Rotating the cube
   - [Animation](https://github.com/tauseefk/mnky/commit/a3a11b91675c329fcb5c52a9ae9e442d478959ec)
   - [Rotation and translation](https://github.com/tauseefk/mnky/commit/ee0fbedafb5f99dbd45bf6d9427db70b477f8c39)
 
